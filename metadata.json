@@ -1,0 +1,5 @@
+{
+  "name": "Migration CRM",
+  "description": "A CRM application for migration services with PostgreSQL integration via Supabase.",
+  "requestFramePermissions": []
+}
