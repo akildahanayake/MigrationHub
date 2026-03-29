@@ -1,0 +1,5 @@
+{
+  "name": "Migration CRM",
+  "description": "A CRM application for managing migrations, cloned from MigrationCRM repository.",
+  "requestFramePermissions": []
+}

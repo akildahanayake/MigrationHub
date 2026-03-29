@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 224 71% 4%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 25% 27%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 1rem;
+
+    /* Vibrant Palette - Universal Tokens */
+    --vibrant-blue: 221.2 83.2% 53.3%;
+    --vibrant-green: 142.1 76.2% 36.3%;
+    --vibrant-yellow: 47.9 95.8% 51.2%;
+    --vibrant-red: 346.8 77.2% 49.8%;
+
+    /* Glassmorphism Classes in CSS Variables */
+    --glass-bg: 0 0% 100% / 0.8;
+    --glass-border: 214.3 31.8% 91.4% / 1;
+    --glass-shadow: 222.2 47.4% 11.2% / 0.08;
+    --glass-blur: 12px;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 6.5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+
+    --vibrant-blue: 217.2 91.2% 59.8%;
+    --vibrant-green: 142.1 70.6% 45.3%;
+    --vibrant-yellow: 47.9 95.8% 61.2%;
+    --vibrant-red: 346.8 77.2% 59.8%;
+
+    --glass-bg: 222.2 84% 4.9% / 0.8;
+    --glass-border: 217.2 32.6% 17.5% / 0.8;
+    --glass-shadow: 0 0% 0% / 0.4;
+    --glass-blur: 24px;
+
+    color-scheme: dark;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background-color: hsla(var(--glass-bg));
+    border: 1px solid hsla(var(--glass-border));
+    box-shadow: 0 8px 32px 0 hsla(var(--glass-shadow));
+  }
+
+  .glass-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 12px 0 hsla(var(--glass-shadow));
+    border-radius: var(--radius);
+  }
+
+  .dark .glass, .dark .glass-card {
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+  }
+
+  .bg-vibrant-blue { background-color: hsl(var(--vibrant-blue)); }
+  .bg-vibrant-green { background-color: hsl(var(--vibrant-green)); }
+  .bg-vibrant-yellow { background-color: hsl(var(--vibrant-yellow)); }
+  .bg-vibrant-red { background-color: hsl(var(--vibrant-red)); }
+
+  .text-vibrant-blue { color: hsl(var(--vibrant-blue)); }
+  .text-vibrant-green { color: hsl(var(--vibrant-green)); }
+  .text-vibrant-yellow { color: hsl(var(--vibrant-yellow)); }
+  .text-vibrant-red { color: hsl(var(--vibrant-red)); }
+
+  .border-vibrant-blue { border-color: hsl(var(--vibrant-blue) / 0.3); }
+  .border-vibrant-green { border-color: hsl(var(--vibrant-green) / 0.3); }
+  .border-vibrant-yellow { border-color: hsl(var(--vibrant-yellow) / 0.3); }
+  .border-vibrant-red { border-color: hsl(var(--vibrant-red) / 0.3); }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.05s ease;
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom Utilities to map to variables */
+.bg-background { background-color: hsl(var(--background)); }
+.text-foreground { color: hsl(var(--foreground)); }
+.bg-card { background-color: hsl(var(--card)); }
+.text-card-foreground { color: hsl(var(--card-foreground)); }
+.bg-primary { background-color: hsl(var(--primary)); }
+.text-primary-foreground { color: hsl(var(--primary-foreground)); }
+.bg-secondary { background-color: hsl(var(--secondary)); }
+.text-secondary-foreground { color: hsl(var(--secondary-foreground)); }
+.bg-muted { background-color: hsl(var(--muted)); }
+.text-muted-foreground { color: hsl(var(--muted-foreground)); }
+.border-border { border-color: hsl(var(--border)); }
+.bg-accent { background-color: hsl(var(--accent)); }
+.text-accent-foreground { color: hsl(var(--accent-foreground)); }
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* Slate 300 */
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155; /* Slate 700 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* Slate 400 */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569; /* Slate 600 */
+}
+
+.paypal-card-slot {
+  min-height: 52px;
+  padding: 12px;
+  position: relative;
+}
+
+.paypal-card-slot iframe {
+  width: 100% !important;
+  pointer-events: auto !important;
+}
