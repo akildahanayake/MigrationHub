@@ -7,7 +7,8 @@
     "dev": "vite",
     "dev:backend": "php -S localhost:8000 -t backend",
     "dev:all": "node scripts/dev-all.mjs",
-    "build": "vite build",
+    "build:frontend": "vite build",
+    "build": "npm run build:frontend && node scripts/prepare-production.mjs",
     "preview": "vite preview",
     "lint": "tsc --noEmit"
   },

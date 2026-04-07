@@ -39,6 +39,11 @@ Run the following command to generate the optimized `dist/` folder:
 ```bash
 npm run build
 ```
+This now prepares a deployable `dist/` that includes frontend output plus backend runtime files (`api/`, `config/`, `install/`, `uploads/`, `.htaccess`, `database.mysql.sql`, `.env.example`).
+
+Important:
+- If `backend/.env` exists, build packaging now also copies it to `dist/.env`.
+- If you deploy manually, ensure a real `.env` file is present in your deployed app root (same level as `api/` and `config/`), otherwise DB defaults will be used.
 
 ### 4. Database Setup
 1. Use the provided `database.sql` file located in the root directory.
@@ -66,7 +71,7 @@ server {
 - **HTTPS:** Ensure your production server has an SSL certificate (Let's Encrypt).
 
 ## 🔑 Access Credentials (Demo)
-- **Super Admin:** Username: `akil` | Password: `eternals`
+- **Default Admin Login:** Username: `admin@admin.com` | Password: `admin123`
 - **Clients/Agents:** Use the "Register" feature on the login screen.
 
 ---
@@ -143,3 +148,23 @@ powershell -ExecutionPolicy Bypass -File .\\scripts\\prepare-godaddy.ps1
 ```
 
 Then follow [deploy/godaddy/README.md](deploy/godaddy/README.md).
+
+## Multi-Domain Hosting (Root, Subfolder, Subdomain)
+
+This app supports hosting under all common URL structures with the same codebase:
+- `https://www.mydomain.com`
+- `https://www.mydomain.com/app/`
+- `https://app.mydomain.com`
+
+Use these settings in deployed `.env`:
+
+```env
+APP_ALLOWED_ORIGIN=https://mydomain.com,https://www.mydomain.com,https://*.mydomain.com
+FRONTEND_APP_URL=https://www.mydomain.com/app/
+```
+
+Notes:
+- `APP_ALLOWED_ORIGIN` accepts comma-separated origins and wildcard subdomains.
+- `FRONTEND_APP_URL` is used as a fallback (for payment return URLs); when requests include `Origin`, backend prefers that dynamically.
+- If you host in `/app/`, upload your built files into that subdirectory so `api/` is available under the same base path.
+

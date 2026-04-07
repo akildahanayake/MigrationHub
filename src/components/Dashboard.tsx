@@ -17,19 +17,38 @@ import { cn } from '../utils/cn';
 import { getProfilePic } from '../utils/user';
 import { apiFetch } from '../api/apiClient';
 
+const HEALTH_POLL_INTERVAL_MS = 15_000;
+const HEALTH_FAILURE_THRESHOLD = 2;
+
 export default function Dashboard() {
   const { currentUser, users, documents, meetings, payments, setActiveTab, setSelectedUserProfileId, setSelectedChatContactId, pipelineStages, notifications, markNotificationAsRead } = useStore();
   const normalizedRole = String(currentUser.role || '').trim().toUpperCase();
   const isPrivilegedUser = normalizedRole === 'SUPER_ADMIN' || normalizedRole === 'ADMIN';
   const [isDbLive, setIsDbLive] = useState(false);
   const [healthChecked, setHealthChecked] = useState(false);
+  const [sessionTime, setSessionTime] = useState(() => new Date());
+
+  useEffect(() => {
+    const clockIntervalId = window.setInterval(() => {
+      setSessionTime(new Date());
+    }, 1_000);
+
+    return () => {
+      window.clearInterval(clockIntervalId);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isPrivilegedUser) return;
 
     let cancelled = false;
+    let consecutiveFailures = 0;
+    let isRequestInFlight = false;
 
     const checkHealth = async () => {
+      if (isRequestInFlight) return;
+      isRequestInFlight = true;
+
       try {
         const response = await apiFetch('/health.php', {
           method: 'GET',
@@ -37,32 +56,45 @@ export default function Dashboard() {
         });
 
         if (!response.ok) {
+          consecutiveFailures += 1;
           if (!cancelled) {
-            setIsDbLive(false);
             setHealthChecked(true);
+            if (consecutiveFailures >= HEALTH_FAILURE_THRESHOLD) {
+              setIsDbLive(false);
+            }
           }
           return;
         }
 
         const payload = await response.json();
         const live = !!payload?.success && !!payload?.db?.connected;
+        consecutiveFailures = 0;
 
         if (!cancelled) {
           setIsDbLive(live);
           setHealthChecked(true);
         }
       } catch {
+        consecutiveFailures += 1;
         if (!cancelled) {
-          setIsDbLive(false);
           setHealthChecked(true);
+          if (consecutiveFailures >= HEALTH_FAILURE_THRESHOLD) {
+            setIsDbLive(false);
+          }
         }
+      } finally {
+        isRequestInFlight = false;
       }
     };
 
     void checkHealth();
+    const intervalId = window.setInterval(() => {
+      void checkHealth();
+    }, HEALTH_POLL_INTERVAL_MS);
 
     return () => {
       cancelled = true;
+      window.clearInterval(intervalId);
     };
   }, [isPrivilegedUser]);
 
@@ -182,7 +214,7 @@ export default function Dashboard() {
           <p className="text-[10px] font-black uppercase tracking-widest text-white/80 mb-1.5 ml-1">Current Session</p>
           <p className="text-4xl font-black tabular-nums tracking-tighter leading-none flex items-center gap-2">
             <Clock size={28} className="text-white" />
-            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            {sessionTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
       </div>

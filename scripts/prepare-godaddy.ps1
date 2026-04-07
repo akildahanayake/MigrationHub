@@ -43,6 +43,9 @@ Copy-Item -Path "backend/database.mysql.sql" -Destination (Join-Path $dest "data
 $rootHtaccess = @'
 RewriteEngine On
 
+# Never rewrite backend runtime paths to SPA.
+RewriteRule ^(api|config|install|uploads)(/.*)?$ - [L,NC]
+
 # Protect environment/hidden files
 <FilesMatch "^(\.env|\.git|\.htaccess)">
   Require all denied
@@ -69,6 +72,9 @@ LEGACY_APP_STATE_MIRROR=0
 AUTO_SCHEMA_MANAGE=0
 '@
 Set-Content -Path (Join-Path $dest ".env.example") -Value $envTemplate -NoNewline
+if (Test-Path "backend/.env") {
+  Copy-Item -Path "backend/.env" -Destination (Join-Path $dest ".env") -Force
+}
 
 Write-Host "Creating deployment zip..."
 $zipPath = Join-Path $repoRoot "deploy/godaddy/public_html.zip"
